@@ -1,0 +1,428 @@
+{
+    "schemaVersion": "2021-11-01",
+    "name": "Sample Lens",
+    "description": "This is a sample lens to demonstrate custom lens creation with detailed questions and professional structure.",
+    "pillars": [
+      {
+        "id": "opex",
+        "name": "Operational Excellence",
+        "questions": [
+          {
+            "id": "monitoring",
+            "title": "Monitoring",
+            "description": "Monitoring is an essential aspect of operational excellence. Describe how you monitor your workload to ensure its health and performance.",
+            "choices": [
+              {
+                "id": "choice1",
+                "title": "Use Amazon CloudWatch",
+                "helpfulResource": {
+                  "displayText": "Amazon CloudWatch is a monitoring and observability service that provides data and actionable insights for AWS, hybrid, and on-premises applications and infrastructure resources.",
+                  "url": "https://aws.amazon.com/cloudwatch/"
+                },
+                "improvementPlan": {
+                  "displayText": "Implement Amazon CloudWatch to collect and analyze metrics, logs, and events from your AWS resources and applications. Configure alarms and notifications to proactively respond to issues."
+                }
+              },
+              {
+                "id": "choice2",
+                "title": "Implement Centralized Logging",
+                "helpfulResource": {
+                  "displayText": "Centralized logging is a best practice for collecting and analyzing logs from all components of your workload, enabling better visibility and troubleshooting.",
+                  "url": "https://aws.amazon.com/products/management-tools/"
+                },
+                "improvementPlan": {
+                  "displayText": "Set up a centralized logging solution, such as Amazon CloudWatch Logs or a third-party logging service, to collect and analyze logs from all components of your workload. Implement log aggregation, filtering, and analysis to identify and troubleshoot issues."
+                }
+              },
+              {
+                "id": "choice3",
+                "title": "Use AWS X-Ray for Tracing",
+                "helpfulResource": {
+                  "displayText": "AWS X-Ray helps developers analyze and debug production, distributed applications, such as those built using a microservices architecture.",
+                  "url": "https://aws.amazon.com/xray/"
+                },
+                "improvementPlan": {
+                  "displayText": "Implement AWS X-Ray to trace requests as they travel through your application. This helps in identifying bottlenecks and understanding application performance."
+                }
+              },
+              {
+                "id": "choice4",
+                "title": "Implement Health Checks",
+                "helpfulResource": {
+                  "displayText": "Health checks are essential for ensuring that your application is running as expected and to initiate remediation actions when necessary.",
+                  "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html"
+                },
+                "improvementPlan": {
+                  "displayText": "Set up health checks for your resources to monitor their availability and performance. Use Route 53 or ELB health checks to automate failover and ensure high availability."
+                }
+              }
+            ],
+            "riskRules": [
+              {
+                "condition": "choice1 && choice2 && choice3 && choice4",
+                "risk": "NO_RISK"
+              },
+              {
+                "condition": "(choice1 && choice2) || (choice3 && choice4)",
+                "risk": "MEDIUM_RISK"
+              },
+              {
+                "condition": "default",
+                "risk": "HIGH_RISK"
+              }
+            ]
+          },
+          {
+            "id": "incident_management",
+            "title": "Incident Management",
+            "description": "Incident management involves detecting, responding to, and recovering from incidents. Describe your incident management process.",
+            "choices": [
+              {
+                "id": "choice1",
+                "title": "Automated Incident Detection",
+                "helpfulResource": {
+                  "displayText": "Automated incident detection helps quickly identify issues and reduces response times.",
+                  "url": "https://aws.amazon.com/devops/incident-management/"
+                },
+                "improvementPlan": {
+                  "displayText": "Implement automated incident detection tools such as Amazon CloudWatch Alarms or third-party solutions to quickly identify and respond to incidents."
+                }
+              },
+              {
+                "id": "choice2",
+                "title": "Runbooks and Playbooks",
+                "helpfulResource": {
+                  "displayText": "Runbooks and playbooks provide standardized procedures for handling incidents, ensuring consistency and reducing resolution times.",
+                  "url": "https://aws.amazon.com/blogs/mt/creating-effective-operational-runbooks/"
+                },
+                "improvementPlan": {
+                  "displayText": "Develop and maintain runbooks and playbooks for common incident scenarios. Ensure they are easily accessible and regularly updated."
+                }
+              },
+              {
+                "id": "choice3",
+                "title": "Incident Response Drills",
+                "helpfulResource": {
+                  "displayText": "Incident response drills help prepare your team for real incidents by practicing response procedures.",
+                  "url": "https://aws.amazon.com/architecture/well-architected/incident-response/"
+                },
+                "improvementPlan": {
+                  "displayText": "Conduct regular incident response drills to ensure your team is prepared to handle incidents effectively. Review and update procedures based on drill outcomes."
+                }
+              },
+              {
+                "id": "choice4",
+                "title": "Post-Incident Analysis",
+                "helpfulResource": {
+                  "displayText": "Post-incident analysis helps identify the root cause of incidents and improve future responses.",
+                  "url": "https://aws.amazon.com/blogs/devops/incident-analysis-and-why-you-need-it/"
+                },
+                "improvementPlan": {
+                  "displayText": "Perform post-incident analysis to identify the root cause of incidents and implement corrective actions to prevent recurrence."
+                }
+              }
+            ],
+            "riskRules": [
+              {
+                "condition": "choice1 && choice2 && choice3 && choice4",
+                "risk": "NO_RISK"
+              },
+              {
+                "condition": "(choice1 && choice2) || (choice3 && choice4)",
+                "risk": "MEDIUM_RISK"
+              },
+              {
+                "condition": "default",
+                "risk": "HIGH_RISK"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "security",
+        "name": "Security",
+        "questions": [
+          {
+            "id": "data_protection",
+            "title": "Data Protection",
+            "description": "Data protection involves safeguarding your data from unauthorized access and ensuring its integrity and availability.",
+            "choices": [
+              {
+                "id": "choice1",
+                "title": "Encrypt Data at Rest",
+                "helpfulResource": {
+                  "displayText": "Encryption at rest protects data stored on disks, ensuring that even if physical storage is compromised, the data remains secure.",
+                  "url": "https://aws.amazon.com/kms/"
+                },
+                "improvementPlan": {
+                  "displayText": "Implement AWS Key Management Service (KMS) to encrypt your data at rest. Configure policies to enforce encryption across all storage services."
+                }
+              },
+              {
+                "id": "choice2",
+                "title": "Encrypt Data in Transit",
+                "helpfulResource": {
+                  "displayText": "Encryption in transit protects data being transferred over networks, ensuring that it cannot be intercepted or tampered with.",
+                  "url": "https://aws.amazon.com/cloudhsm/"
+                },
+                "improvementPlan": {
+                  "displayText": "Use TLS/SSL to encrypt data in transit. Ensure that all communications between services, both internal and external, are encrypted."
+                }
+              },
+              {
+                "id": "choice3",
+                "title": "Implement IAM Policies",
+                "helpfulResource": {
+                  "displayText": "IAM policies control access to your AWS resources, ensuring that only authorized users and services can access sensitive data.",
+                  "url": "https://aws.amazon.com/iam/"
+                },
+                "improvementPlan": {
+                  "displayText": "Define and implement strict IAM policies to enforce the principle of least privilege. Regularly review and update policies to ensure they remain effective."
+                }
+              },
+              {
+                "id": "choice4",
+                "title": "Regular Security Audits",
+                "helpfulResource": {
+                  "displayText": "Regular security audits help identify vulnerabilities and ensure compliance with security best practices and regulations.",
+                  "url": "https://aws.amazon.com/security-hub/"
+                },
+                "improvementPlan": {
+                  "displayText": "Conduct regular security audits using AWS Security Hub or third-party tools. Address any identified vulnerabilities promptly."
+                }
+              }
+            ],
+            "riskRules": [
+              {
+                "condition": "choice1 && choice2 && choice3 && choice4",
+                "risk": "NO_RISK"
+              },
+              {
+                "condition": "(choice1 && choice2) || (choice3 && choice4)",
+                "risk": "MEDIUM_RISK"
+              },
+              {
+                "condition": "default",
+                "risk": "HIGH_RISK"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "reliability",
+        "name": "Reliability",
+        "questions": [
+          {
+            "id": "fault_tolerance",
+            "title": "Fault Tolerance",
+            "description": "Fault tolerance ensures that your workload can continue to operate correctly in the event of a failure.",
+            "choices": [
+              {
+                "id": "choice1",
+                "title": "Implement Multi-AZ Architecture",
+                "helpfulResource": {
+                  "displayText": "Multi-AZ architectures distribute resources across multiple Availability Zones, providing high availability and fault tolerance.",
+                  "url": "https://aws.amazon.com/rds/details/multi-az/"
+                },
+                "improvementPlan": {
+                  "displayText": "Design your workload to use a multi-AZ architecture to ensure high availability. Use services like Amazon RDS with Multi-AZ deployments."
+                }
+              },
+              {
+                "id": "choice2",
+                "title": "Use Load Balancers",
+                "helpfulResource": {
+                  "displayText": "Load balancers distribute incoming traffic across multiple targets, improving availability and reliability.",
+                  "url": "https://aws.amazon.com/elasticloadbalancing/"
+                },
+                "improvementPlan": {
+                  "displayText": "Implement load balancers such as Elastic Load Balancer (ELB) to distribute traffic across multiple instances, enhancing fault tolerance."
+                }
+              },
+              {
+                "id": "choice3",
+                "title": "Implement Auto Scaling",
+                "helpfulResource": {
+                  "displayText": "Auto scaling automatically adjusts the number of instances in your workload based on demand, ensuring consistent performance.",
+                  "url": "https://aws.amazon.com/autoscaling/"
+                },
+                "improvementPlan": {
+                  "displayText": "Configure auto scaling for your instances to handle varying loads efficiently. Use Amazon EC2 Auto Scaling to maintain performance and availability."
+                }
+              },
+              {
+                "id": "choice4",
+                "title": "Backup and Restore Procedures",
+                "helpfulResource": {
+                  "displayText": "Backup and restore procedures ensure that you can recover your data in the event of a failure.",
+                  "url": "https://aws.amazon.com/backup/"
+                },
+                "improvementPlan": {
+                  "displayText": "Implement comprehensive backup and restore procedures using AWS Backup or other services. Regularly test your backup and restore processes to ensure reliability."
+                }
+              }
+            ],
+            "riskRules": [
+              {
+                "condition": "choice1 && choice2 && choice3 && choice4",
+                "risk": "NO_RISK"
+              },
+              {
+                "condition": "(choice1 && choice2) || (choice3 && choice4)",
+                "risk": "MEDIUM_RISK"
+              },
+              {
+                "condition": "default",
+                "risk": "HIGH_RISK"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "performance_efficiency",
+        "name": "Performance Efficiency",
+        "questions": [
+          {
+            "id": "scalability",
+            "title": "Scalability",
+            "description": "Scalability ensures that your workload can handle increasing loads efficiently.",
+            "choices": [
+              {
+                "id": "choice1",
+                "title": "Use Elastic Load Balancing",
+                "helpfulResource": {
+                  "displayText": "Elastic Load Balancing automatically distributes incoming application traffic across multiple targets, ensuring high availability.",
+                  "url": "https://aws.amazon.com/elasticloadbalancing/"
+                },
+                "improvementPlan": {
+                  "displayText": "Implement Elastic Load Balancing to distribute traffic and enhance scalability. Configure appropriate load balancer settings based on your workload requirements."
+                }
+              },
+              {
+                "id": "choice2",
+                "title": "Use Auto Scaling",
+                "helpfulResource": {
+                  "displayText": "Auto scaling ensures that you have the right amount of resources available to handle the load for your application.",
+                  "url": "https://aws.amazon.com/autoscaling/"
+                },
+                "improvementPlan": {
+                  "displayText": "Configure auto scaling policies to dynamically adjust the number of instances based on demand, ensuring efficient resource utilization and performance."
+                }
+              },
+              {
+                "id": "choice3",
+                "title": "Use Caching",
+                "helpfulResource": {
+                  "displayText": "Caching reduces the load on your database and improves application performance by storing frequently accessed data in memory.",
+                  "url": "https://aws.amazon.com/caching/"
+                },
+                "improvementPlan": {
+                  "displayText": "Implement caching strategies using services like Amazon ElastiCache to improve performance and reduce the load on your backend systems."
+                }
+              },
+              {
+                "id": "choice4",
+                "title": "Optimize Database Performance",
+                "helpfulResource": {
+                  "displayText": "Optimizing your database performance ensures that it can handle high loads and provide quick responses.",
+                  "url": "https://aws.amazon.com/rds/performance/"
+                },
+                "improvementPlan": {
+                  "displayText": "Regularly tune your database configurations and queries to optimize performance. Use Amazon RDS Performance Insights to monitor and analyze database performance."
+                }
+              }
+            ],
+            "riskRules": [
+              {
+                "condition": "choice1 && choice2 && choice3 && choice4",
+                "risk": "NO_RISK"
+              },
+              {
+                "condition": "(choice1 && choice2) || (choice3 && choice4)",
+                "risk": "MEDIUM_RISK"
+              },
+              {
+                "condition": "default",
+                "risk": "HIGH_RISK"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cost_optimization",
+        "name": "Cost Optimization",
+        "questions": [
+          {
+            "id": "cost_management",
+            "title": "Cost Management",
+            "description": "Cost management ensures that you optimize your spend on AWS resources while maintaining performance and reliability.",
+            "choices": [
+              {
+                "id": "choice1",
+                "title": "Implement Cost Monitoring",
+                "helpfulResource": {
+                  "displayText": "Cost monitoring helps you understand where your money is going and identify opportunities for savings.",
+                  "url": "https://aws.amazon.com/aws-cost-management/"
+                },
+                "improvementPlan": {
+                  "displayText": "Use AWS Cost Explorer and AWS Budgets to monitor and analyze your spending. Set up alerts for unexpected cost increases."
+                }
+              },
+              {
+                "id": "choice2",
+                "title": "Use Reserved Instances",
+                "helpfulResource": {
+                  "displayText": "Reserved Instances can provide significant savings over on-demand pricing when you have predictable usage patterns.",
+                  "url": "https://aws.amazon.com/ec2/pricing/reserved-instances/"
+                },
+                "improvementPlan": {
+                  "displayText": "Evaluate your usage patterns and purchase Reserved Instances or Savings Plans to reduce costs. Review these commitments regularly to ensure they match your usage."
+                }
+              },
+              {
+                "id": "choice3",
+                "title": "Implement Right-Sizing",
+                "helpfulResource": {
+                  "displayText": "Right-sizing ensures that you are using the most cost-effective resources for your workload.",
+                  "url": "https://aws.amazon.com/compute/right-sizing/"
+                },
+                "improvementPlan": {
+                  "displayText": "Regularly analyze your resource usage and adjust instance sizes to match your workload needs. Use AWS Compute Optimizer to get recommendations for right-sizing."
+                }
+              },
+              {
+                "id": "choice4",
+                "title": "Optimize Storage Costs",
+                "helpfulResource": {
+                  "displayText": "Optimizing storage costs ensures that you are using the most cost-effective storage solutions for your data.",
+                  "url": "https://aws.amazon.com/whitepapers/optimizing-storage-costs/"
+                },
+                "improvementPlan": {
+                  "displayText": "Review your storage usage and implement lifecycle policies to move data to lower-cost storage tiers. Use Amazon S3 Intelligent-Tiering to automatically optimize storage costs."
+                }
+              }
+            ],
+            "riskRules": [
+              {
+                "condition": "choice1 && choice2 && choice3 && choice4",
+                "risk": "NO_RISK"
+              },
+              {
+                "condition": "(choice1 && choice2) || (choice3 && choice4)",
+                "risk": "MEDIUM_RISK"
+              },
+              {
+                "condition": "default",
+                "risk": "HIGH_RISK"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
