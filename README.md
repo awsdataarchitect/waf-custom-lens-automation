@@ -18,20 +18,23 @@ graph TD;
 ```
 
 # Usage
+
 1. To upload the custom lens:
-aws s3 cp custom_lens.json s3://well-architect-custom-lens-demo/
+
+* `aws s3 cp custom_lens.json s3://well-architect-custom-lens-demo/`
 
 2. To upload the answers, create workload, reivew answers and generate Well-Architected PDF Report:
-aws s3 cp answers.json s3://well-architect-custom-lens-demo/
+
+* `aws s3 cp answers.json s3://well-architect-custom-lens-demo/`
 
 
-The cdk.json file tells the CDK Toolkit how to execute your app.
+The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
-# Useful commands
+## Useful commands
 
-npm run build compile typescript to js
-npm run watch watch for changes and compile
-npm run test perform the jest unit tests
-npx cdk deploy deploy this stack to your default AWS account/region
-npx cdk diff compare deployed stack with current state
-npx cdk synth emits the synthesized CloudFormation template
+* `npm run build`   compile typescript to js
+* `npm run watch`   watch for changes and compile
+* `npm run test`    perform the jest unit tests
+* `npx cdk deploy`  deploy this stack to your default AWS account/region
+* `npx cdk diff`    compare deployed stack with current state
+* `npx cdk synth`   emits the synthesized CloudFormation template
