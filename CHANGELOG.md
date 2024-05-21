@@ -6,6 +6,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2024-05-21
+### Added
+- Automated workload creation in AWS Well-Architected Tool.
+- Applied custom lens to workload.
+- Answered lens questions based on provided JSON.
+- Generated and uploaded Well-Architected Reports to S3.
+- Lambda function code enhanced for the above functionality.
+
 ## [0.2.0] - 2024-05-20
 ### Added
 - Integrated AWS CDK for infrastructure as code setup.

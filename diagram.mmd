@@ -5,3 +5,8 @@ graph TD;
     B -.->|Assume Role| D[IAM Role];
     D --> B;
     X[User] --> |File Upload| A[S3 Bucket];
+    C -->|Create Workload| E[Workload];
+    C -->|Apply Lens| F[Lens Review];
+    C -->|Answer Questions| G[Question Answers];
+    C -->|Generate Report| H[Report PDF in S3];
+    H -->|Uploaded Report| A;

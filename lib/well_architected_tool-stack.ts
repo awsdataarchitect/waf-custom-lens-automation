@@ -24,11 +24,10 @@ export class WellArchitectedToolStack extends cdk.Stack {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
-        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'),
         iam.ManagedPolicy.fromAwsManagedPolicyName('WellArchitectedConsoleFullAccess')  // Custom policy for WA Tool access
       ]
     });
-
 
     // Lambda function triggered by S3 upload
     const fn = new lambda.Function(this, 'CustomLensHandler', {
@@ -37,8 +36,16 @@ export class WellArchitectedToolStack extends cdk.Stack {
         code: lambda.Code.fromAsset('lambda'),
         handler: 'well_architected_tool.handler',
         role: lambdaRole,
+        timeout: cdk.Duration.seconds(30),
         environment: {
-            'REGION': this.region
+            'REGION': this.region,
+            'LENS_NAME': 'Sample Lens',
+            'LENS_VERSION': '1.0',
+            'WORKLOAD_NAME': 'My Workload',
+            'WORKLOAD_DESCRIPTION': 'My Workload Description',
+            'REVIEW_OWNER': 'your_review_owner_email@example.com',
+            'CUSTOM_LENS_FILENAME': 'custom_lens.json',
+            'ANSWERS_FILENAME': 'answers.json'
         }
     });
 

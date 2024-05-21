@@ -1,0 +1,49 @@
+{
+    "questionResponses": [
+        {
+            "questionId": "monitoring",
+            "choices": [
+                "choice1",
+                "choice2"
+            ]
+        },
+        {
+            "questionId": "incident_management",
+            "choices": [
+                "choice1",
+                "choice2"
+            ]
+        },
+        {
+            "questionId": "data_protection",
+            "choices": [
+                "choice2",
+                "choice3",
+                "choice4"
+            ]
+        },
+        {
+            "questionId": "fault_tolerance",
+            "choices": [
+                "choice3",
+                "choice4"
+            ]
+        },
+        {
+            "questionId": "scalability",
+            "choices": [
+                "choice1",
+                "choice2",
+                "choice3",
+                "choice4"
+            ]
+        },
+        {
+            "questionId": "cost_management",
+            "choices": [
+                "choice2",
+                "choice3"
+            ]
+        }
+    ]
+}
