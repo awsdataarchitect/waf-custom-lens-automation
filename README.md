@@ -15,8 +15,8 @@ graph TD;
     C -->|Answer Questions| G[Question Answers];
     C -->|Generate Report| H[Report PDF in S3];
     H -->|Uploaded Report| A;
+```
 
-     
 # Usage
 1. To upload the custom lens:
 aws s3 cp custom_lens.json s3://well-architect-custom-lens-demo/
@@ -27,7 +27,7 @@ aws s3 cp answers.json s3://well-architect-custom-lens-demo/
 
 The cdk.json file tells the CDK Toolkit how to execute your app.
 
-Useful commands
+# Useful commands
 
 npm run build compile typescript to js
 npm run watch watch for changes and compile
