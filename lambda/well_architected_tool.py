@@ -3,10 +3,14 @@ import boto3
 import os
 import uuid
 import base64
+import fitz
+import tempfile
 
 class WellArchitectedTool:
     def __init__(self, region_name):
         self.client = boto3.client('wellarchitected', region_name=region_name)
+        self.s3_client = boto3.client('s3')
+
 
     def upload_custom_lens(self, lens_json, lens_version):
         lens_name = lens_json['name']
@@ -164,7 +168,7 @@ class WellArchitectedTool:
         except Exception as e:
             print(f"Error updating workload {workload_id} with lens {lens_arn}: {e}")
 
-    def generate_report(self, workload_id, lens_arn,bucket_name):
+    def generate_report(self, workload_id, lens_arn,bucket_name,wa_pdf):
         try:
             response = self.client.get_lens_review_report(
                 WorkloadId=workload_id,
@@ -172,22 +176,46 @@ class WellArchitectedTool:
             )
             report_data = response['LensReviewReport']['Base64String']
             pdf_data = base64.b64decode(report_data)
-            s3_client = boto3.client('s3')
-            s3_key = 'well-architected-report.pdf'
-            s3_client.put_object(Bucket=bucket_name, Key=s3_key, Body=pdf_data)
+            s3_key = wa_pdf
+            self.s3_client.put_object(Bucket=bucket_name, Key=s3_key, Body=pdf_data)
             print(f"Well-Architected report generated and uploaded to s3://{bucket_name}/{s3_key}")
         except self.client.exceptions.ValidationException as e:
             if "No lens review for lens alias" in str(e):
                 print(f"No lens review found for workload {workload_id} and lens {lens_arn}. Creating a new lens review...")
                 self.create_or_update_lens_review(workload_id, lens_arn)
-                self.generate_report(workload_id, lens_arn,bucket_name)
+                self.generate_report(workload_id, lens_arn,bucket_name,wa_pdf)
             else:
                 print(f"Error generating report for workload {workload_id} and lens {lens_arn}: {e}")
         except Exception as e:
             print(f"Error generating report for workload {workload_id} and lens {lens_arn}: {e}")           
 
+    def mask_pdf(self, bucket, account_number,wa_pdf,wa_pdf_masked):
+        # Download the PDF file from S3 to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            self.s3_client.download_fileobj(bucket, wa_pdf, temp_file)
+            temp_file_path = temp_file.name
+        document = fitz.open(temp_file_path)
+        for page_num in range(len(document)):
+            page = document[page_num]
+            text_instances = page.search_for(account_number)
+            for inst in text_instances:
+                page.add_redact_annot(inst, text='XXXXXXXXXXXXX', fill=(0, 0, 0))
+            page.apply_redactions()
+        document.save(f"/tmp/{wa_pdf_masked}")
+        document.close()
+
+        # Read the masked PDF as bytes
+        with open(f"/tmp/{wa_pdf_masked}", 'rb') as masked_pdf:
+            pdf_bytes = masked_pdf.read()
+
+        # Upload the masked PDF to S3
+        self.s3_client.put_object(Bucket=bucket, Key=wa_pdf_masked, Body=pdf_bytes)
+        print(f"Well-Architected report with masked account number saved to s3://{bucket}/{wa_pdf_masked}")
+
+
 def handler(event, context):
     region_name = os.getenv('REGION')
+    account_number = os.getenv('ACCOUNT')
     lens_version = os.getenv('LENS_VERSION')
     lens_name = os.getenv('LENS_NAME')
     workload_name = os.getenv('WORKLOAD_NAME')
@@ -195,6 +223,8 @@ def handler(event, context):
     review_owner = os.getenv('REVIEW_OWNER')
     custom_lens_file = os.getenv('CUSTOM_LENS_FILENAME')
     answers_file = os.getenv('ANSWERS_FILENAME')
+    wa_pdf = os.getenv('WA_PDF')
+    wa_pdf_masked = os.getenv('WA_PDF_MASKED')
     tool = WellArchitectedTool(region_name)
 
     # Iterate through the uploaded files
@@ -227,5 +257,7 @@ def handler(event, context):
                     else:
                         tool.create_or_update_lens_review(workload_id, lens_arn)
                     tool.update_workload(workload_id, lens_arn, answers_json)
-                    tool.generate_report(workload_id, lens_arn,bucket)
+                    tool.generate_report(workload_id, lens_arn,bucket,wa_pdf)
+                    tool.mask_pdf(bucket, account_number,wa_pdf, wa_pdf_masked)
+
 

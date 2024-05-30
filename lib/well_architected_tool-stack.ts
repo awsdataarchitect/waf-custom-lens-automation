@@ -4,7 +4,6 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
-import { Aspects } from 'aws-cdk-lib';
 
 
 export class WellArchitectedToolStack extends cdk.Stack {
@@ -29,23 +28,35 @@ export class WellArchitectedToolStack extends cdk.Stack {
       ]
     });
 
+    const fitzLayer = new lambda.LayerVersion(this, 'FitzLayer', {
+      code: lambda.Code.fromAsset('layer/fitz-layer.zip'),
+      compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
+      
+      description: 'Layer containing the fitz (PyMuPDF) library',
+    });
+
     // Lambda function triggered by S3 upload
     const fn = new lambda.Function(this, 'CustomLensHandler', {
         functionName: 'well_architected_tool',
-        runtime: lambda.Runtime.PYTHON_3_10,
+        runtime: lambda.Runtime.PYTHON_3_9,
         code: lambda.Code.fromAsset('lambda'),
+        architecture: lambda.Architecture.X86_64,
         handler: 'well_architected_tool.handler',
         role: lambdaRole,
         timeout: cdk.Duration.seconds(30),
+        layers: [fitzLayer],
         environment: {
             'REGION': this.region,
+            'ACCOUNT': this.account,
             'LENS_NAME': 'Sample Lens',
             'LENS_VERSION': '1.0',
             'WORKLOAD_NAME': 'My Workload',
             'WORKLOAD_DESCRIPTION': 'My Workload Description',
             'REVIEW_OWNER': 'your_review_owner_email@example.com',
             'CUSTOM_LENS_FILENAME': 'custom_lens.json',
-            'ANSWERS_FILENAME': 'answers.json'
+            'ANSWERS_FILENAME': 'answers.json',
+            'WA_PDF': 'well-architected-report.pdf',
+            'WA_PDF_MASKED': 'well-architected-report-masked.pdf'
         }
     });
 

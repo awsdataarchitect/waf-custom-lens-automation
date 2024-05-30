@@ -6,6 +6,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2024-05-29
+### Added
+- `mask_pdf` function in Lambda code to redact account numbers from PDF files before uploading to S3.
+- Downloads PDF from S3, masks the specified account number, and re-uploads the masked PDF to S3.
+- Created Lambda layer for PyMuPDF (Fitz) library to handle PDF manipulation.
+
 ## [0.3.0] - 2024-05-21
 ### Added
 - Automated workload creation in AWS Well-Architected Tool.
