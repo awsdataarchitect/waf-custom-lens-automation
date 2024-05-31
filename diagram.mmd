@@ -10,3 +10,4 @@ graph TD;
     C -->|Answer Questions| G[Question Answers];
     C -->|Generate Report| H[Report PDF in S3];
     H -->|Uploaded Report| A;
+    H -->|Send Notification| I[SNS Topic];

@@ -10,6 +10,7 @@ class WellArchitectedTool:
     def __init__(self, region_name):
         self.client = boto3.client('wellarchitected', region_name=region_name)
         self.s3_client = boto3.client('s3')
+        self.sns_client = boto3.client('sns')
 
 
     def upload_custom_lens(self, lens_json, lens_version):
@@ -168,7 +169,7 @@ class WellArchitectedTool:
         except Exception as e:
             print(f"Error updating workload {workload_id} with lens {lens_arn}: {e}")
 
-    def generate_report(self, workload_id, lens_arn,bucket_name,wa_pdf):
+    def generate_report(self, workload_id, lens_arn,bucket_name,wa_pdf,sns_topic_arn):
         try:
             response = self.client.get_lens_review_report(
                 WorkloadId=workload_id,
@@ -179,11 +180,20 @@ class WellArchitectedTool:
             s3_key = wa_pdf
             self.s3_client.put_object(Bucket=bucket_name, Key=s3_key, Body=pdf_data)
             print(f"Well-Architected report generated and uploaded to s3://{bucket_name}/{s3_key}")
+
+            # Publish SNS notification
+            message = f"Well-Architected report generated and uploaded to s3://{bucket_name}/{s3_key}"
+            self.sns_client.publish(
+                TopicArn=sns_topic_arn,
+                Message=message,
+                Subject='Well-Architected Report Available'
+            )
+            print("SNS notification sent.")           
         except self.client.exceptions.ValidationException as e:
             if "No lens review for lens alias" in str(e):
                 print(f"No lens review found for workload {workload_id} and lens {lens_arn}. Creating a new lens review...")
                 self.create_or_update_lens_review(workload_id, lens_arn)
-                self.generate_report(workload_id, lens_arn,bucket_name,wa_pdf)
+                self.generate_report(workload_id, lens_arn,bucket_name,wa_pdf,sns_topic_arn)
             else:
                 print(f"Error generating report for workload {workload_id} and lens {lens_arn}: {e}")
         except Exception as e:
@@ -225,6 +235,8 @@ def handler(event, context):
     answers_file = os.getenv('ANSWERS_FILENAME')
     wa_pdf = os.getenv('WA_PDF')
     wa_pdf_masked = os.getenv('WA_PDF_MASKED')
+    sns_topic_arn = os.getenv('SNS_TOPIC_ARN')
+
     tool = WellArchitectedTool(region_name)
 
     # Iterate through the uploaded files
@@ -257,7 +269,7 @@ def handler(event, context):
                     else:
                         tool.create_or_update_lens_review(workload_id, lens_arn)
                     tool.update_workload(workload_id, lens_arn, answers_json)
-                    tool.generate_report(workload_id, lens_arn,bucket,wa_pdf)
+                    tool.generate_report(workload_id, lens_arn,bucket,wa_pdf,sns_topic_arn)
                     tool.mask_pdf(bucket, account_number,wa_pdf, wa_pdf_masked)
 
 

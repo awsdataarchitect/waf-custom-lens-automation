@@ -6,6 +6,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2024-05-30
+### Added
+- Integration with SNS for notifications when the PDF report is uploaded.
+- Email subscription for SNS notifications.
+- Grant publish permissions to Lambda function for SNS topic.
+- Updated architecture diagram using Mermaid command in README.
+
 ## [0.3.1] - 2024-05-29
 ### Added
 - `mask_pdf` function in Lambda code to redact account numbers from PDF files before uploading to S3.

@@ -4,6 +4,8 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as sns_subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 
 
 export class WellArchitectedToolStack extends cdk.Stack {
@@ -31,34 +33,48 @@ export class WellArchitectedToolStack extends cdk.Stack {
     const fitzLayer = new lambda.LayerVersion(this, 'FitzLayer', {
       code: lambda.Code.fromAsset('layer/fitz-layer.zip'),
       compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
-      
+
       description: 'Layer containing the fitz (PyMuPDF) library',
     });
 
+    // SNS topic for notifications
+    const topic = new sns.Topic(this, 'PdfReportNotificationTopic', {
+      displayName: 'PDF Report Notification Topic'
+    });
+
+    // Adding a subscription to the SNS topic (e.g., Email Subscription)
+    topic.addSubscription(new sns_subscriptions.EmailSubscription('your_email@example.com'));
+
+
     // Lambda function triggered by S3 upload
     const fn = new lambda.Function(this, 'CustomLensHandler', {
-        functionName: 'well_architected_tool',
-        runtime: lambda.Runtime.PYTHON_3_9,
-        code: lambda.Code.fromAsset('lambda'),
-        architecture: lambda.Architecture.X86_64,
-        handler: 'well_architected_tool.handler',
-        role: lambdaRole,
-        timeout: cdk.Duration.seconds(30),
-        layers: [fitzLayer],
-        environment: {
-            'REGION': this.region,
-            'ACCOUNT': this.account,
-            'LENS_NAME': 'Sample Lens',
-            'LENS_VERSION': '1.0',
-            'WORKLOAD_NAME': 'My Workload',
-            'WORKLOAD_DESCRIPTION': 'My Workload Description',
-            'REVIEW_OWNER': 'your_review_owner_email@example.com',
-            'CUSTOM_LENS_FILENAME': 'custom_lens.json',
-            'ANSWERS_FILENAME': 'answers.json',
-            'WA_PDF': 'well-architected-report.pdf',
-            'WA_PDF_MASKED': 'well-architected-report-masked.pdf'
-        }
+      functionName: 'well_architected_tool',
+      runtime: lambda.Runtime.PYTHON_3_9,
+      code: lambda.Code.fromAsset('lambda'),
+      architecture: lambda.Architecture.X86_64,
+      handler: 'well_architected_tool.handler',
+      role: lambdaRole,
+      timeout: cdk.Duration.seconds(30),
+      layers: [fitzLayer],
+      environment: {
+        'REGION': this.region,
+        'ACCOUNT': this.account,
+        'LENS_NAME': 'Sample Lens',
+        'LENS_VERSION': '1.0',
+        'WORKLOAD_NAME': 'My Workload',
+        'WORKLOAD_DESCRIPTION': 'My Workload Description',
+        'REVIEW_OWNER': 'your_review_owner_email@example.com',
+        'CUSTOM_LENS_FILENAME': 'custom_lens.json',
+        'ANSWERS_FILENAME': 'answers.json',
+        'WA_PDF': 'well-architected-report.pdf',
+        'WA_PDF_MASKED': 'well-architected-report-masked.pdf',
+        'SNS_TOPIC_ARN': topic.topicArn
+
+      }
     });
+
+    // Grant SNS publish permissions to the Lambda function
+    topic.grantPublish(fn);
 
     // Adding S3 bucket notification to trigger Lambda on object creation
     bucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.LambdaDestination(fn));

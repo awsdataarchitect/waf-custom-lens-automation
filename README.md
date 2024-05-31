@@ -1,6 +1,7 @@
 # Automating the AWS Well-Architected Tool using a Custom Lens
 
 # Architecture Diagram
+* `mmdc -i diagram.mmd -t dark -b transparent --cssFile flowchart1.css -o diagram.png`
 
 ```mermaid
 graph TD;
@@ -15,6 +16,7 @@ graph TD;
     C -->|Answer Questions| G[Question Answers];
     C -->|Generate Report| H[Report PDF in S3];
     H -->|Uploaded Report| A;
+    H -->|Send Notification| I[SNS Topic];
 ```
 
 # Usage
